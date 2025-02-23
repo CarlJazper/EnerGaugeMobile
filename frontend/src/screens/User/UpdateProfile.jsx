@@ -20,7 +20,7 @@ const UpdateProfile = () => {
       const token = await AsyncStorage.getItem('userToken');
 
       const response = await axios.put(
-        'http://192.168.228.235:5000/api/users/profile/update',
+        'http://172.34.15.8:5000/api/users/profile/update',
         { first_name: firstName, last_name: lastName, address, city, country },
         { headers: { Authorization: `Bearer ${token}` } }
       );

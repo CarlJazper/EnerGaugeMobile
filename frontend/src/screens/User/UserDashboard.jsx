@@ -25,12 +25,12 @@ const UserDashboard = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ViewProducts')}>
-          <Text style={styles.buttonText}>View Products</Text>
+          <Text style={styles.buttonText}>Analytics here</Text>
           <Ionicons name="pricetag" size={24} color="#fff" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MyOrders')}>
-          <Text style={styles.buttonText}>My Orders</Text>
+          <Text style={styles.buttonText}>Forecast</Text>
           <Ionicons name="cart" size={24} color="#fff" />
         </TouchableOpacity>
       </View>

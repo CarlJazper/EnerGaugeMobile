@@ -31,7 +31,7 @@ const AdminDashboard = () => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ManageProducts')}>
-          <Text style={styles.buttonText}>Manage Products</Text>
+          <Text style={styles.buttonText}>Train Forecast Mdel</Text>
           <Ionicons name="list" size={24} color="#fff" />
         </TouchableOpacity>
       </View>

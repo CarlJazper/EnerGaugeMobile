@@ -1,86 +1,124 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Home = () => {
   const navigation = useNavigation();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <Text style={styles.title}>EnerGauge</Text>
-        <Text style={styles.subtitle}>Energy Consumption and Demand Forecasting</Text>
-        
-        {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('UserLogin')}>
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <LinearGradient
+          colors={['#43a047', '#1b5e20']}
+          style={styles.headerGradient}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>EnerGauge</Text>
+            <Text style={styles.subtitle}>Energy Consumption and Demand Forecasting</Text>
+          </View>
+        </LinearGradient>
 
-      {/* Mission and Vision Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Our Mission</Text>
-        <Text style={styles.bodyText}>
-          To empower individuals and businesses with data-driven insights for efficient energy consumption and sustainable resource management.
-        </Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserLogin')}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.aboutButton]} onPress={() => navigation.navigate('AboutUs')}>
+            <Text style={styles.buttonText}>About Us</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Text style={styles.sectionTitle}>Our Vision</Text>
-        <Text style={styles.bodyText}>
-          A world where energy efficiency is maximized, waste is minimized, and sustainability is at the core of decision-making.
-        </Text>
-      </View>
+        <View style={styles.contentContainer}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Our Mission</Text>
+            <Text style={styles.bodyText}>
+              To empower individuals and businesses with data-driven insights for efficient energy consumption and sustainable resource management.
+            </Text>
+          </View>
 
-      {/* Image Section */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={require('../../assets/images/home.png')} // Replace with your image path
-          style={styles.image}
-        />
-      </View>
-    </ScrollView>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Our Vision</Text>
+            <Text style={styles.bodyText}>
+              A world where energy efficiency is maximized, waste is minimized, and sustainability is at the core of decision-making.
+            </Text>
+          </View>
+
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('../../assets/images/home.png')}
+              style={styles.image}
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 16,
+  safeArea: {
+    flex: 1,
     backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  headerGradient: {
+    paddingTop: 60,
+    paddingBottom: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#2E7D32',
+    color: '#fff',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#777',
+    color: '#e8f5e9',
     textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: -25,
     marginBottom: 20,
   },
-  loginButton: {
+  button: {
     backgroundColor: '#2E7D32',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginHorizontal: 10,
+    elevation: 3,
   },
-  loginButtonText: {
+  aboutButton: {
+    backgroundColor: '#1E88E5',
+  },
+  buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  contentContainer: {
+    padding: 20,
+  },
   section: {
     marginBottom: 30,
+    backgroundColor: '#f1f8e9',
+    borderRadius: 15,
+    padding: 20,
+    elevation: 2,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#2E7D32',
     marginBottom: 10,
@@ -88,7 +126,6 @@ const styles = StyleSheet.create({
   bodyText: {
     fontSize: 16,
     color: '#555',
-    marginBottom: 15,
     lineHeight: 24,
   },
   imageContainer: {

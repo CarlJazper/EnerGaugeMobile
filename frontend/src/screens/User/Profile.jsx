@@ -21,7 +21,7 @@ const Profile = () => {
         return;
       }
 
-      const response = await axios.get('http://192.168.228.235:5000/api/users/profile', {
+      const response = await axios.get('http://172.34.15.8:5000/api/users/profile', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
