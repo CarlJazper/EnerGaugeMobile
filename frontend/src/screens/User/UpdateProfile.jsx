@@ -5,87 +5,128 @@ import axios from 'axios';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const UpdateProfile = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const { userData } = route.params;
+    const navigation = useNavigation();
+    const route = useRoute();
+    const { userData } = route.params;
 
-  const [firstName, setFirstName] = useState(userData?.first_name || '');
-  const [lastName, setLastName] = useState(userData?.last_name || '');
-  const [address, setAddress] = useState(userData?.address || '');
-  const [city, setCity] = useState(userData?.city || '');
-  const [country, setCountry] = useState(userData?.country || '');
+    const [firstName, setFirstName] = useState(userData?.first_name || '');
+    const [lastName, setLastName] = useState(userData?.last_name || '');
+    const [address, setAddress] = useState(userData?.address || '');
+    const [city, setCity] = useState(userData?.city || '');
+    const [country, setCountry] = useState(userData?.country || '');
+    const [phone, setPhone] = useState(userData?.phone || ''); // Added phone state
 
-  const handleUpdate = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
+    const handleUpdate = async () => {
+        try {
+            const token = await AsyncStorage.getItem('userToken');
 
-      const response = await axios.put(
-        'http://172.34.15.8:5000/api/users/profile/update',
-        { first_name: firstName, last_name: lastName, address, city, country },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+            const response = await axios.put(
+                'http://192.168.228.235:5000/api/users/profile/update',
+                {
+                    first_name: firstName,
+                    last_name: lastName,
+                    address,
+                    city,
+                    country,
+                    phone, // Include phone number in the update data
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
-      Alert.alert('Success', response.data.message);
-      navigation.goBack(); // Go back to the Profile screen after updating
-    } catch (error) {
-      Alert.alert('Error', error.response?.data?.message || 'Failed to update profile.');
-    }
-  };
+            Alert.alert('Success', response.data.message);
+            navigation.goBack(); // Go back to the Profile screen after updating
+        } catch (error) {
+            Alert.alert('Error', error.response?.data?.message || 'Failed to update profile.');
+        }
+    };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Update Profile</Text>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Update Profile</Text>
 
-      <TextInput style={styles.input} placeholder="First Name" value={firstName} onChangeText={setFirstName} />
-      <TextInput style={styles.input} placeholder="Last Name" value={lastName} onChangeText={setLastName} />
-      <TextInput style={styles.input} placeholder="Address" value={address} onChangeText={setAddress} />
-      <TextInput style={styles.input} placeholder="City" value={city} onChangeText={setCity} />
-      <TextInput style={styles.input} placeholder="Country" value={country} onChangeText={setCountry} />
+            <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                value={firstName}
+                onChangeText={setFirstName}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Last Name"
+                value={lastName}
+                onChangeText={setLastName}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Address"
+                value={address}
+                onChangeText={setAddress}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="City"
+                value={city}
+                onChangeText={setCity}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Country"
+                value={country}
+                onChangeText={setCountry}
+            />
+            {/* Added phone number input */}
+            <TextInput
+                style={styles.input}
+                placeholder="Phone Number"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad" // Set keyboard type for phone numbers
+            />
 
-      <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-        <Text style={styles.updateButtonText}>Save Changes</Text>
-      </TouchableOpacity>
-    </View>
-  );
+            <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+                <Text style={styles.updateButtonText}>Save Changes</Text>
+            </TouchableOpacity>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2E7D32',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  updateButton: {
-    backgroundColor: '#2E7D32',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  updateButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#fff',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#2E7D32',
+        marginBottom: 20,
+    },
+    input: {
+        width: '100%',
+        padding: 12,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        marginBottom: 15,
+        fontSize: 16,
+    },
+    updateButton: {
+        backgroundColor: '#2E7D32',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    updateButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });
 
 export default UpdateProfile;
