@@ -28,10 +28,10 @@ const UserNavigation = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="Dashoard"
         component={UserDashboard}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
         }}
       />

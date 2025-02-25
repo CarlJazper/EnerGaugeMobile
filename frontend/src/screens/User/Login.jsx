@@ -33,7 +33,7 @@ const Login = () => {
 
                 // Navigate the user based on their role
                 if (role === 'admin') {
-                    navigation.navigate('AdminDashboard');
+                    navigation.navigate('AdminNavigation');
                 } else if (role === 'user') {
                     navigation.navigate('UserNavigation');
                 } else {

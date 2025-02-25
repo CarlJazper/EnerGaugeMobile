@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
 import axios from 'axios';
 
 const Profile = () => {
@@ -40,6 +40,18 @@ const Profile = () => {
             fetchUserProfile();
         }, [])
     );
+
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('userRole');
+
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'UserLogin' }],
+            })
+        );
+    };
 
     if (loading) {
         return (
@@ -88,6 +100,10 @@ const Profile = () => {
             >
                 <Text style={styles.updateButtonText}>Update Profile</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -124,6 +140,18 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     updateButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    logoutButton: {
+        marginTop: 20,
+        backgroundColor: '#d32f2f',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    logoutText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',

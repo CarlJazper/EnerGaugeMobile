@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import AdminDashboard from '../screens/Admin/AdminDashboard';
+import AdminNavigation from './AdminNavigation'; // Import Admin Navigation
+import UserNavigation from './UserNavigation';  
 import Login from '../screens/User/Login';
 import Register from '../screens/User/Register';
-import UserNavigation from './UserNavigation';  // Import the new User Navigation
-import Home from '../screens/Home';  // Import Home screen
-import AboutUs from '../screens/AboutUs';  // Import About Us screen
+import Home from '../screens/Home';  
+import AboutUs from '../screens/AboutUs';  
 
 const Stack = createStackNavigator();
 
 const Navigation = () => {
-  const [initialRoute, setInitialRoute] = useState('Home');  // Set Home as the initial screen
+  const [initialRoute, setInitialRoute] = useState('Home');
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -21,9 +21,9 @@ const Navigation = () => {
         const role = await AsyncStorage.getItem('userRole');
 
         if (token && role) {
-          setInitialRoute(role === 'admin' ? 'AdminDashboard' : 'UserNavigation');
+          setInitialRoute(role === 'admin' ? 'AdminNavigation' : 'UserNavigation');
         } else {
-          setInitialRoute('Home');  // Default to Home if not logged in
+          setInitialRoute('Home');
         }
       } catch (error) {
         console.log('Error checking auth status:', error);
@@ -39,7 +39,7 @@ const Navigation = () => {
       <Stack.Screen name="AboutUs" component={AboutUs} />
       <Stack.Screen name="UserLogin" component={Login} />
       <Stack.Screen name="UserRegister" component={Register} />
-      <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
+      <Stack.Screen name="AdminNavigation" component={AdminNavigation} />
       <Stack.Screen name="UserNavigation" component={UserNavigation} />  
     </Stack.Navigator>
   );
