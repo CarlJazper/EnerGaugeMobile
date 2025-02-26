@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import config from "../../utils/config";
 
 const UpdateProfile = () => {
     const navigation = useNavigation();
@@ -21,7 +22,7 @@ const UpdateProfile = () => {
             const token = await AsyncStorage.getItem('userToken');
 
             const response = await axios.put(
-                'http://192.168.228.235:5000/api/users/profile/update',
+                `${config.API_BASE_URL}/api/users/profile/update`,
                 {
                     first_name: firstName,
                     last_name: lastName,

@@ -3,6 +3,7 @@ import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'rea
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
 import axios from 'axios';
+import config from "../../utils/config";
 
 const Profile = () => {
     const navigation = useNavigation();
@@ -21,7 +22,7 @@ const Profile = () => {
                 return;
             }
 
-            const response = await axios.get('http://192.168.228.235:5000/api/users/profile', {
+            const response = await axios.get(`${config.API_BASE_URL}/api/users/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

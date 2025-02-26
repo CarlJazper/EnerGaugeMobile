@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BarChart, LineChart, PieChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
+import config from "../../utils/config";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -18,7 +19,7 @@ const UserForecast = () => {
         const token = await AsyncStorage.getItem("userToken");
         if (!token) throw new Error("No authentication token found.");
 
-        const response = await axios.get("http://192.168.228.235:5000/userforecast", {
+        const response = await axios.get(`${config.API_BASE_URL}/userforecast`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

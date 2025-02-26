@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, Alert, StyleSheet } from "react-native";
 import { Button, Card, ActivityIndicator, Snackbar, Dialog, Portal, IconButton } from "react-native-paper";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation, useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
+import config from "../../../utils/config";
 
 const UserList = () => {
+  const navigation = useNavigation(); // Get navigation instance
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -13,9 +16,11 @@ const UserList = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [token, setToken] = useState("");
 
-  useEffect(() => {
-    getTokenAndRole();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getTokenAndRole();
+    }, [])
+  );
 
   const getTokenAndRole = async () => {
     try {
@@ -32,7 +37,7 @@ const UserList = () => {
   const fetchUsers = async (authToken) => {
     setLoading(true);
     try {
-      const response = await axios.get("http://192.168.228.235:5000/api/users/userslist", {
+      const response = await axios.get(`${config.API_BASE_URL}/api/users/userslist`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       setUsers(response.data);
@@ -47,10 +52,10 @@ const UserList = () => {
   const handleDeleteUser = async () => {
     setDialogVisible(false);
     try {
-      await axios.delete(`http://192.168.228.235:5000/api/users/delete/${selectedUserId}`, {
+      await axios.delete(`${config.API_BASE_URL}/api/users/delete/${selectedUserId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUsers(users.filter((user) => user._id !== selectedUserId));
+      fetchUsers(token); // Refresh after deleting a user
       setSnackbarMessage("User deleted successfully!");
     } catch (error) {
       setSnackbarMessage("Failed to delete user. Please try again.");
@@ -65,16 +70,12 @@ const UserList = () => {
   };
 
   const handleUpdateUser = (userId) => {
-    console.log(`Navigate to update screen for user ID: ${userId}`);
+    navigation.navigate("UserUpdate", { id: userId });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>User List</Text>
-
-      <Button mode="contained" onPress={() => fetchUsers(token)} style={styles.refreshButton}>
-        Refresh
-      </Button>
 
       {loading ? (
         <ActivityIndicator animating={true} size="large" style={styles.loader} />
@@ -87,9 +88,9 @@ const UserList = () => {
               <Card.Content>
                 <Text style={styles.userName}>{item.first_name} {item.last_name}</Text>
                 <Text style={styles.userEmail}>{item.email}</Text>
-                <Text style={styles.userPhone}>📞 {item.phone || "N/A"}</Text>
+                <Text style={styles.userPhone}>{item.phone || "N/A"}</Text>
                 <Text style={styles.userLocation}>
-                  📍 {item.address}, {item.city}, {item.country}
+                  {item.address}, {item.city}, {item.country}
                 </Text>
               </Card.Content>
               <Card.Actions style={styles.actions}>
@@ -124,7 +125,6 @@ const UserList = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "white" },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
-  refreshButton: { marginBottom: 10, alignSelf: "center" },
   loader: { flex: 1, justifyContent: "center", alignItems: "center" },
   card: { marginBottom: 10, borderRadius: 8, elevation: 3, backgroundColor: "#fff", padding: 10 },
   userName: { fontSize: 18, fontWeight: "bold" },

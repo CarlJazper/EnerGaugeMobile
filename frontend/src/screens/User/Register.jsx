@@ -1,45 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {View,Text,TextInput,TouchableOpacity,StyleSheet,Alert,ScrollView,KeyboardAvoidingView,Platform,SafeAreaView,} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { MaterialIcons } from '@expo/vector-icons';
+import config from "../../utils/config";
 
 const Register = () => {
     const navigation = useNavigation();
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [phone, setPhone] = useState(''); // Added phone number state
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: '',
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const handleChange = (name, value) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleRegister = async () => {
-        if (password !== confirmPassword) {
+        if (formData.password !== formData.confirmPassword) {
             Alert.alert('Error', 'Passwords do not match');
             return;
         }
 
         try {
-            const response = await axios.post('http://192.168.228.235:5000/api/users/register', {
-                first_name: firstName,
-                last_name: lastName,
-                email,
-                password,
-                phone, // Include phone number in the registration data
+            const response = await axios.post(`${config.API_BASE_URL}/api/users/register`, {
+                first_name: formData.firstName,
+                last_name: formData.lastName,
+                email: formData.email,
+                password: formData.password,
+                phone: formData.phone,
             });
 
             if (response.status === 201) {
                 Alert.alert(
                     'Registration Successful',
                     'Please check your email for verification.',
-                    [
-                        {
-                            text: 'OK',
-                            onPress: () => navigation.navigate('UserLogin'), // Navigate to login on "OK"
-                        },
-                    ]
+                    [{ text: 'OK', onPress: () => navigation.navigate('UserLogin') }]
                 );
-            } else {
-                Alert.alert('Registration Failed', response.data.message || 'An error occurred');
             }
         } catch (error) {
             console.error('Registration failed:', error);
@@ -51,107 +54,237 @@ const Register = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Register</Text>
+        <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.keyboardView}
+            >
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.title}>Create Account</Text>
+                        <Text style={styles.subtitle}>Sign up to get started</Text>
+                    </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="First Name"
-                autoCapitalize="words"
-                value={firstName}
-                onChangeText={setFirstName}
-            />
+                    <View style={styles.formContainer}>
+                        <View style={styles.nameContainer}>
+                            <View style={[styles.inputContainer, { flex: 1, marginRight: 8 }]}>
+                                <MaterialIcons name="person" size={20} color="#88B39D" style={styles.inputIcon} />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="First Name"
+                                    placeholderTextColor="#88B39D"
+                                    value={formData.firstName}
+                                    onChangeText={(text) => handleChange('firstName', text)}
+                                    autoCapitalize="words"
+                                />
+                            </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Last Name"
-                autoCapitalize="words"
-                value={lastName}
-                onChangeText={setLastName}
-            />
+                            <View style={[styles.inputContainer, { flex: 1, marginLeft: 8 }]}>
+                                <MaterialIcons name="person" size={20} color="#88B39D" style={styles.inputIcon} />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Last Name"
+                                    placeholderTextColor="#88B39D"
+                                    value={formData.lastName}
+                                    onChangeText={(text) => handleChange('lastName', text)}
+                                    autoCapitalize="words"
+                                />
+                            </View>
+                        </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Phone Number"
-                keyboardType="phone-pad"
-                value={phone}
-                onChangeText={setPhone}
-            />
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="email" size={20} color="#88B39D" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Email"
+                                placeholderTextColor="#88B39D"
+                                keyboardType="email-address"
+                                value={formData.email}
+                                onChangeText={(text) => handleChange('email', text)}
+                                autoCapitalize="none"
+                            />
+                        </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="phone" size={20} color="#88B39D" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Phone Number"
+                                placeholderTextColor="#88B39D"
+                                keyboardType="phone-pad"
+                                value={formData.phone}
+                                onChangeText={(text) => handleChange('phone', text)}
+                            />
+                        </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Confirm Password"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="lock" size={20} color="#88B39D" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Password"
+                                placeholderTextColor="#88B39D"
+                                secureTextEntry={!showPassword}
+                                value={formData.password}
+                                onChangeText={(text) => handleChange('password', text)}
+                            />
+                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                <MaterialIcons
+                                    name={showPassword ? "visibility" : "visibility-off"}
+                                    size={20}
+                                    color="#88B39D"
+                                />
+                            </TouchableOpacity>
+                        </View>
 
-            <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="lock" size={20} color="#88B39D" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Confirm Password"
+                                placeholderTextColor="#88B39D"
+                                secureTextEntry={!showConfirmPassword}
+                                value={formData.confirmPassword}
+                                onChangeText={(text) => handleChange('confirmPassword', text)}
+                            />
+                            <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                                <MaterialIcons
+                                    name={showConfirmPassword ? "visibility" : "visibility-off"}
+                                    size={20}
+                                    color="#88B39D"
+                                />
+                            </TouchableOpacity>
+                        </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate('UserLogin')}>
-                <Text style={styles.link}>Already have an account? Login</Text>
-            </TouchableOpacity>
-        </View>
+                        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                            <Text style={styles.registerButtonText}>Create Account</Text>
+                        </TouchableOpacity>
+
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.divider} />
+                            <Text style={styles.dividerText}>or</Text>
+                            <View style={styles.divider} />
+                        </View>
+
+                        <TouchableOpacity 
+                            style={styles.signInButton} 
+                            onPress={() => navigation.navigate('UserLogin')}
+                        >
+                            <Text style={styles.signInButtonText}>Sign In</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#F5F9F7',
+    },
+    keyboardView: {
+        flex: 1,
+    },
+    headerContainer: {
+        marginTop: 40,
+        marginBottom: 30,
+        paddingHorizontal: 30,
     },
     title: {
-        fontSize: 28,
+        fontSize: 32,
         fontWeight: 'bold',
         color: '#2E7D32',
+        marginBottom: 10,
+    },
+    subtitle: {
+        fontSize: 16,
+        color: '#88B39D',
+    },
+    formContainer: {
+        paddingHorizontal: 30,
+    },
+    nameContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 15,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 15,
         marginBottom: 20,
+        paddingHorizontal: 15,
+        height: 55,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.05,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    inputIcon: {
+        marginRight: 10,
     },
     input: {
-        width: '100%',
-        padding: 12,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        marginBottom: 12,
+        flex: 1,
+        fontSize: 16,
+        color: '#2E7D32',
     },
-    button: {
+    registerButton: {
         backgroundColor: '#2E7D32',
-        padding: 12,
-        borderRadius: 8,
-        width: '100%',
+        height: 55,
+        borderRadius: 15,
+        justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
+        shadowColor: '#2E7D32',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 4.65,
+        elevation: 8,
     },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
+    registerButtonText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: '600',
     },
-    link: {
-        marginTop: 15,
-        color: '#2E7D32',
+    dividerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 30,
+    },
+    divider: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#88B39D',
+        opacity: 0.4,
+    },
+    dividerText: {
+        color: '#88B39D',
+        paddingHorizontal: 15,
         fontSize: 14,
+    },
+    signInButton: {
+        height: 55,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#2E7D32',
+        backgroundColor: 'transparent',
+        marginBottom: 30,
+    },
+    signInButtonText: {
+        color: '#2E7D32',
+        fontSize: 16,
+        fontWeight: '600',
     },
 });
 
