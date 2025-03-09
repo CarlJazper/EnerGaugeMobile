@@ -61,7 +61,7 @@ const Register = () => {
             >
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={styles.headerContainer}>
-                        <Text style={styles.title}>Create Account</Text>
+                        <Text style={styles.title}>Create an Account</Text>
                         <Text style={styles.subtitle}>Sign up to get started</Text>
                     </View>
 
@@ -159,18 +159,13 @@ const Register = () => {
                             <Text style={styles.registerButtonText}>Create Account</Text>
                         </TouchableOpacity>
 
-                        <View style={styles.dividerContainer}>
-                            <View style={styles.divider} />
-                            <Text style={styles.dividerText}>or</Text>
-                            <View style={styles.divider} />
-                        </View>
-
                         <TouchableOpacity 
-                            style={styles.signInButton} 
+                            style={styles.signInTextContainer} 
                             onPress={() => navigation.navigate('UserLogin')}
                         >
-                            <Text style={styles.signInButtonText}>Sign In</Text>
+                            <Text style={styles.signInText}>Have an account? <Text style={styles.signInLink}>Sign in</Text></Text>
                         </TouchableOpacity>
+
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -187,7 +182,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     headerContainer: {
-        marginTop: 40,
+        marginTop: 140,
         marginBottom: 30,
         paddingHorizontal: 30,
     },
@@ -235,7 +230,7 @@ const styles = StyleSheet.create({
         color: '#2E7D32',
     },
     registerButton: {
-        backgroundColor: '#2E7D32',
+        backgroundColor: '#86EFAC',
         height: 55,
         borderRadius: 15,
         justifyContent: 'center',
@@ -251,39 +246,20 @@ const styles = StyleSheet.create({
         elevation: 8,
     },
     registerButtonText: {
-        color: '#FFFFFF',
+        color: '#065F46',
         fontSize: 18,
         fontWeight: '600',
     },
-    dividerContainer: {
-        flexDirection: 'row',
+    signInTextContainer: {
+        marginTop: 20,
         alignItems: 'center',
-        marginVertical: 30,
     },
-    divider: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#88B39D',
-        opacity: 0.4,
-    },
-    dividerText: {
-        color: '#88B39D',
-        paddingHorizontal: 15,
-        fontSize: 14,
-    },
-    signInButton: {
-        height: 55,
-        borderRadius: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#2E7D32',
-        backgroundColor: 'transparent',
-        marginBottom: 30,
-    },
-    signInButtonText: {
-        color: '#2E7D32',
+    signInText: {
         fontSize: 16,
+        color: '#88B39D',
+    },
+    signInLink: {
+        color: '#718096',
         fontWeight: '600',
     },
 });

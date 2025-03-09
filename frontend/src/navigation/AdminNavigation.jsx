@@ -29,14 +29,15 @@ const AdminTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false,
+        headerShown: true,
+        headerTitle: route.name, // Sets the header title dynamically
         tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Dashboard') iconName = 'home';
           else if (route.name === 'Recent forecast') iconName = 'time';
           else if (route.name === 'Train model') iconName = 'cog';
           else if (route.name === 'Users') iconName = 'people';
-          else if (route.name === 'Profile') iconName = 'person'; // Added Profile icon
+          else if (route.name === 'Profile') iconName = 'person';
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -52,6 +53,7 @@ const AdminTabs = () => {
     </Tab.Navigator>
   );
 };
+
 
 const AdminNavigation = () => {
   return (

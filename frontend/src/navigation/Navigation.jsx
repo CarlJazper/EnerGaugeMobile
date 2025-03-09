@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import AdminNavigation from './AdminNavigation'; // Import Admin Navigation
+import AdminNavigation from './AdminNavigation';
 import UserNavigation from './UserNavigation';  
 import Login from '../screens/User/Login';
 import Register from '../screens/User/Register';

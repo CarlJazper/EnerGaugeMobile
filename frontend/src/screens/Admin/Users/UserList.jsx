@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from "react";
 import { View, Text, FlatList, Alert, StyleSheet } from "react-native";
-import { Button, Card, ActivityIndicator, Snackbar, Dialog, Portal, IconButton } from "react-native-paper";
+import { Button, Card, ActivityIndicator, Snackbar, Dialog, Portal, IconButton, Surface } from "react-native-paper";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation, useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import config from "../../../utils/config";
 
 const UserList = () => {
@@ -73,36 +74,87 @@ const UserList = () => {
     navigation.navigate("UserUpdate", { id: userId });
   };
 
+  const renderUserCard = ({ item }) => (
+    <Surface style={styles.cardSurface}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.userHeader}>
+            <View style={styles.avatarContainer}>
+              <Text style={styles.avatarText}>
+                {`${item.first_name[0]}${item.last_name[0]}`}
+              </Text>
+            </View>
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>{item.first_name} {item.last_name}</Text>
+              <View style={styles.infoRow}>
+                <MaterialCommunityIcons name="email-outline" size={16} color="#666" />
+                <Text style={styles.userEmail}>{item.email}</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.detailsContainer}>
+            <View style={styles.infoRow}>
+              <MaterialCommunityIcons name="phone-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>{item.phone || "N/A"}</Text>
+            </View>
+            
+            <View style={styles.infoRow}>
+              <MaterialCommunityIcons name="map-marker-outline" size={16} color="#666" />
+              <Text style={styles.detailText}>
+                {`${item.address}, ${item.city}, ${item.country}`}
+              </Text>
+            </View>
+          </View>
+        </Card.Content>
+
+        <Card.Actions style={styles.actions}>
+          <Button 
+            mode="contained-tonal"
+            onPress={() => handleUpdateUser(item._id)}
+            style={styles.editButton}
+            icon="pencil"
+          >
+            Edit
+          </Button>
+          <Button 
+            mode="contained-tonal"
+            onPress={() => confirmDelete(item._id)}
+            style={styles.deleteButton}
+            icon="delete"
+          >
+            Delete
+          </Button>
+        </Card.Actions>
+      </Card>
+    </Surface>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>User List</Text>
+      <View style={styles.header}>
+        <MaterialCommunityIcons name="account-group" size={24} color="#4CAF50" />
+        <Text style={styles.title}>User Management</Text>
+      </View>
 
       {loading ? (
-        <ActivityIndicator animating={true} size="large" style={styles.loader} />
+        <ActivityIndicator animating={true} size="large" color="#4CAF50" style={styles.loader} />
       ) : (
         <FlatList
           data={users}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <Card style={styles.card}>
-              <Card.Content>
-                <Text style={styles.userName}>{item.first_name} {item.last_name}</Text>
-                <Text style={styles.userEmail}>{item.email}</Text>
-                <Text style={styles.userPhone}>{item.phone || "N/A"}</Text>
-                <Text style={styles.userLocation}>
-                  {item.address}, {item.city}, {item.country}
-                </Text>
-              </Card.Content>
-              <Card.Actions style={styles.actions}>
-                <IconButton icon="pencil" onPress={() => handleUpdateUser(item._id)} />
-                <IconButton icon="delete" iconColor="red" onPress={() => confirmDelete(item._id)} />
-              </Card.Actions>
-            </Card>
-          )}
+          renderItem={renderUserCard}
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}
         />
       )}
 
-      <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)} duration={3000}>
+      <Snackbar 
+        visible={snackbarVisible} 
+        onDismiss={() => setSnackbarVisible(false)} 
+        duration={3000}
+        style={styles.snackbar}
+      >
         {snackbarMessage}
       </Snackbar>
 
@@ -114,7 +166,13 @@ const UserList = () => {
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
-            <Button onPress={handleDeleteUser} textColor="red">Delete</Button>
+            <Button 
+              onPress={handleDeleteUser} 
+              textColor="red"
+              icon="delete"
+            >
+              Delete
+            </Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -123,15 +181,104 @@ const UserList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "white" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
-  loader: { flex: 1, justifyContent: "center", alignItems: "center" },
-  card: { marginBottom: 10, borderRadius: 8, elevation: 3, backgroundColor: "#fff", padding: 10 },
-  userName: { fontSize: 18, fontWeight: "bold" },
-  userEmail: { fontSize: 14, color: "gray" },
-  userPhone: { fontSize: 14, color: "black", marginTop: 5 },
-  userLocation: { fontSize: 14, color: "black", marginTop: 5 },
-  actions: { justifyContent: "flex-end" },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f5f5f5",
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingVertical: 8,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginLeft: 10,
+    color: "#333",
+  },
+  listContainer: {
+    padding: 4,
+  },
+  cardSurface: {
+    elevation: 4,
+    borderRadius: 12,
+    marginBottom: 16,
+    backgroundColor: 'white',
+  },
+  card: {
+    borderRadius: 12,
+    backgroundColor: 'white',
+  },
+  userHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  avatarContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  avatarText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 4,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 2,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: "#666",
+    marginLeft: 8,
+  },
+  detailsContainer: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  detailText: {
+    fontSize: 14,
+    color: "#666",
+    marginLeft: 8,
+    flex: 1,
+  },
+  actions: {
+    justifyContent: "flex-end",
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  editButton: {
+    marginRight: 8,
+    backgroundColor: '#E8F5E9',
+  },
+  deleteButton: {
+    backgroundColor: '#FFEBEE',
+  },
+  loader: {
+    flex: 1,
+  },
+  snackbar: {
+    bottom: 16,
+  },
 });
 
 export default UserList;

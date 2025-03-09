@@ -23,7 +23,7 @@ const UserNavigation = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarStyle: { backgroundColor: '#2E7D32', paddingBottom: 5 },
+        tabBarStyle: { backgroundColor: '#86EFAC', paddingBottom: 5 },
         tabBarActiveTintColor: 'yellow',
         tabBarInactiveTintColor: 'white',
       }}
