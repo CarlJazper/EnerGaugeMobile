@@ -271,8 +271,10 @@ def get_user_forecast():
     }
     factor_counts = {key: 0 for key in factor_sums}  # To calculate averages
 
+    # For scatter plot (feature contribution vs. forecasted energy)
+    scatter_data = {key: [] for key in factor_sums}  # Feature -> List of (feature_value, energy)
+
     for forecast in forecasts:
-        # Ensure timestamp is in ISO format
         forecast["timestamp"] = forecast["timestamp"].isoformat() if isinstance(forecast["timestamp"], datetime.datetime) else str(forecast["timestamp"])
 
         for entry in forecast.get("forecast_data", []):
@@ -293,11 +295,13 @@ def get_user_forecast():
                 except ValueError:
                     pass  # Skip invalid timestamps
 
-            # Aggregate feature contributions safely
+            # Aggregate feature contributions for scatter plot
             for key in factor_sums:
                 if "feature_contributions" in entry and key in entry["feature_contributions"]:
-                    factor_sums[key] += entry["feature_contributions"][key]
+                    feature_value = entry["feature_contributions"][key]
+                    factor_sums[key] += feature_value
                     factor_counts[key] += 1
+                    scatter_data[key].append((feature_value, forecast_energy))
 
     # Compute averages safely
     avg_peak_load = round(np.mean(peak_loads), 2) if peak_loads else 0
@@ -305,6 +309,12 @@ def get_user_forecast():
     max_peak_load = round(max(peak_loads), 2) if peak_loads else 0
     avg_factors = {key: round(factor_sums[key] / factor_counts[key], 2) if factor_counts[key] > 0 else 0 for key in factor_sums}
     avg_energy_by_weekday = {k: round(np.mean(v), 2) if v else 0 for k, v in energy_by_weekday.items()}
+
+    # Format heatmap data (only weekday-based)
+    formatted_heatmap = [
+        {"weekday": w, "avg_energy": round(np.mean(vals), 2) if vals else 0}
+        for w, vals in energy_by_weekday.items()
+    ]
 
     return jsonify({
         "total_forecasts": forecast_count,
@@ -315,7 +325,9 @@ def get_user_forecast():
         "max_peak_load": max_peak_load,
         "avg_factors": avg_factors,
         "energy_by_weekday": avg_energy_by_weekday,
-        "forecasts": forecasts
+        "forecasts": forecasts,
+        "heatmap_data": formatted_heatmap,  # Heatmap data (weekday-based)
+        "scatter_data": scatter_data  # Scatter plot data
     })
 
 @token_required

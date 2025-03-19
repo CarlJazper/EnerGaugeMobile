@@ -28,13 +28,13 @@ const AboutUs = () => {
     { 
       name: "Carl Jazper C. Perez", 
       role: "BSIT Student", 
-      img: require("../../assets/images/logo.png"),
+      img: require("../../assets/images/about1.jpg"),
       expertise: "Backend/Frontend"
     },
     { 
       name: "Marc Gerald T. Salonga", 
       role: "BSIT Student", 
-      img: require("../../assets/images/logo.png"),
+      img: require("../../assets/images/about2.jpg"),
       expertise: "Frontend/Backend"
     },
   ];
